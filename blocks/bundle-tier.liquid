@@ -1,0 +1,614 @@
+{% liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+
+  assign variant = product.selected_or_first_available_variant
+  assign unit_price_cents = variant.price
+  assign unit_count = block.settings.unit_count | at_least: 1
+  assign subtotal_cents = unit_price_cents | times: unit_count
+  assign discount_type = block.settings.discount_type
+
+  case discount_type
+    when 'percentage'
+      assign pct = block.settings.discount_percentage | at_least: 0 | at_most: 100
+      assign multiplier = 100 | minus: pct
+      assign total_cents = subtotal_cents | times: multiplier | divided_by: 100
+    when 'fixed_amount'
+      assign fixed_off_cents = block.settings.discount_fixed_amount | times: 100
+      assign total_cents = subtotal_cents | minus: fixed_off_cents | at_least: 0
+    when 'free_units'
+      assign free_units = block.settings.discount_free_units | at_most: unit_count
+      assign payable_units = unit_count | minus: free_units | at_least: 0
+      assign total_cents = unit_price_cents | times: payable_units
+    else
+      assign total_cents = subtotal_cents
+  endcase
+
+  assign savings_cents = subtotal_cents | minus: total_cents | at_least: 0
+  assign per_unit_cents = total_cents | divided_by: unit_count
+
+  assign savings_percent = 0
+  if subtotal_cents > 0
+    assign savings_percent = savings_cents | times: 100.0 | divided_by: subtotal_cents | round
+  endif
+
+  if block.settings.savings_text != blank
+    assign savings_percent_text = block.settings.savings_text
+    assign savings_amount_text = block.settings.savings_text
+  else
+    assign savings_amount_formatted = savings_cents | money
+    assign savings_percent_text = 'content.bundle_selector_save_percent' | t: percent: savings_percent
+    assign savings_amount_text = 'content.bundle_selector_save_amount' | t: amount: savings_amount_formatted
+  endif
+
+  if block.settings.unit_suffix_text != blank
+    assign unit_suffix_text = block.settings.unit_suffix_text
+  else
+    assign unit_suffix_text = 'content.bundle_selector_each' | t
+  endif
+
+  assign show_badge = false
+  if block.settings.badge_enabled and block.settings.badge_text != blank
+    assign show_badge = true
+  endif
+%}
+
+<div
+  class="bundle-tier{% if block.settings.default_selected %} bundle-tier--selected{% endif %}"
+  data-tier-id="{{ block.id }}"
+  ref="tierLabels[]"
+  style="
+    {% if block.settings.text_color != blank %}
+      --bundle-tier-text: {{ block.settings.text_color }};
+    {% endif %}
+    {% if show_badge %}
+      --bundle-tier-badge-font-size: {{ block.settings.badge_font_size }}px;
+    {% endif %}
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- if block.settings.badge_enabled and block.settings.badge_text != blank -%}
+    <span
+      class="bundle-tier__badge"
+      style="
+        font-size: {{ block.settings.badge_font_size }}px;
+        {% if block.settings.badge_background_color != blank %}
+          --bundle-tier-badge-background: {{ block.settings.badge_background_color }};
+        {% endif %}
+        {% if block.settings.badge_text_color != blank %}
+          --bundle-tier-badge-text: {{ block.settings.badge_text_color }};
+        {% endif %}
+      "
+    >
+      {{- block.settings.badge_text -}}
+    </span>
+  {%- endif -%}
+
+  {%- liquid
+    assign label_weight = 400
+    if block.settings.label_bold
+      assign label_weight = 700
+    endif
+
+    assign price_weight = 400
+    if block.settings.price_bold
+      assign price_weight = 700
+    endif
+
+    assign subtitle_weight = 400
+    if block.settings.subtitle_bold
+      assign subtitle_weight = 700
+    endif
+
+    assign price_original_font_size = block.settings.price_font_size | times: 0.7 | round
+  -%}
+
+  {%- capture radio_markup -%}
+    <input
+      type="radio"
+      name="bundle-tier-{{ section.id }}"
+      class="bundle-tier__radio"
+      value="{{ block.id }}"
+      data-unit-count="{{ unit_count }}"
+      data-per-unit-price="{{ per_unit_cents }}"
+      data-tier-label="{{ block.settings.label | escape }}"
+      {% if block.settings.default_selected %}
+        checked
+      {% endif %}
+      ref="tierRadios[]"
+      on:change="/onTierChange"
+    >
+  {%- endcapture -%}
+
+  {%- capture label_markup -%}
+    <span
+      class="bundle-tier__label {{ block.settings.type_preset }}"
+      style="
+        {% render 'typography-style', settings: block.settings %}
+        font-size: {{ block.settings.label_font_size }}px;
+        font-weight: {{ label_weight }};
+      "
+    >
+      <span class="bundle-tier__label-text">{{- block.settings.label -}}</span>
+      {%- if savings_percent > 0 -%}
+        <span
+          class="bundle-tier__savings"
+          data-role="savings"
+          style="font-size: {{ block.settings.savings_font_size }}px;"
+        >
+          <span class="bundle-tier__savings-percent">{{- savings_percent_text -}}</span>
+          <span class="bundle-tier__savings-amount">{{- savings_amount_text -}}</span>
+        </span>
+      {%- endif -%}
+    </span>
+  {%- endcapture -%}
+
+  {%- capture price_current_markup -%}
+    <span
+      class="bundle-tier__price-current"
+      style="font-size: {{ block.settings.price_font_size }}px; font-weight: {{ price_weight }};"
+    >
+      <span data-role="per-unit-price">{{ per_unit_cents | money }}</span>
+      {%- if unit_count > 1 -%}
+        <span class="bundle-tier__per-unit-suffix">{{ unit_suffix_text }}</span>
+      {%- endif -%}
+    </span>
+  {%- endcapture -%}
+
+  {%- capture price_original_markup -%}
+    {%- if savings_cents > 0 -%}
+      <span
+        class="bundle-tier__price-original"
+        style="font-size: {{ price_original_font_size }}px;"
+      >
+        <span data-role="original-price">{{ unit_price_cents | money }}</span>
+        {%- if unit_count > 1 -%}
+          <span class="bundle-tier__per-unit-suffix">{{ unit_suffix_text }}</span>
+        {%- endif -%}
+      </span>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  <label class="bundle-tier__row">
+    {%- if block.settings.subtitle != blank -%}
+      <span class="bundle-tier__row-grid">
+        {{- radio_markup -}}
+        <span class="bundle-tier__lines">
+          <span class="bundle-tier__header">
+            {{- label_markup -}}
+            {{- price_current_markup -}}
+          </span>
+          <span class="bundle-tier__subrow">
+            <span
+              class="bundle-tier__subtitle"
+              style="font-size: {{ block.settings.subtitle_font_size }}px; font-weight: {{ subtitle_weight }};"
+            >
+              {{- block.settings.subtitle -}}
+            </span>
+            {{- price_original_markup -}}
+          </span>
+        </span>
+      </span>
+    {%- else -%}
+      <span class="bundle-tier__summary">
+        {{- radio_markup -}}
+        {{- label_markup -}}
+        <span class="bundle-tier__price">
+          {{- price_current_markup -}}
+          {{- price_original_markup -}}
+        </span>
+      </span>
+    {%- endif -%}
+  </label>
+
+  {% unless product.has_only_default_variant %}
+    <div
+      class="bundle-tier__units{% unless block.settings.default_selected %} hidden{% endunless %}"
+      data-tier-id="{{ block.id }}"
+      ref="unitLists[]"
+    >
+      {% for i in (1..unit_count) %}
+      <div
+        class="bundle-tier__unit"
+        data-unit-index="{{ forloop.index0 }}"
+      >
+        {%- assign unit_image = variant.featured_image | default: product.featured_media -%}
+        {%- if unit_image -%}
+          <img
+            class="bundle-tier__unit-image"
+            ref="unitImages[]"
+            src="{{ unit_image | image_url: width: 100 }}"
+            alt=""
+            width="50"
+            height="50"
+            loading="lazy"
+          >
+        {%- endif -%}
+
+        <div
+          class="bundle-tier__unit-options"
+          data-tier-id="{{ block.id }}"
+          data-unit-index="{{ forloop.index0 }}"
+        >
+          {%- for option in product.options_with_values -%}
+            {%- assign select_id = 'BundleUnit-' | append: block.id | append: '-' | append: forloop.parentloop.index0 | append: '-' | append: option.position -%}
+            {%- assign option_name_down = option.name | downcase -%}
+            {%- assign is_narrow_option = false -%}
+            {%- if option_name_down contains 'size' or option_name_down contains 'taille' -%}
+              {%- assign is_narrow_option = true -%}
+            {%- endif -%}
+            <div class="bundle-tier__unit-option{% if is_narrow_option %} bundle-tier__unit-option--narrow{% endif %}">
+              <label
+                class="visually-hidden"
+                for="{{ select_id }}"
+              >
+                {{- option.name -}}
+              </label>
+              <div class="bundle-tier__unit-select-wrapper">
+                <select
+                  id="{{ select_id }}"
+                  class="bundle-tier__unit-select"
+                  data-option-position="{{ option.position }}"
+                  ref="unitSelects[]"
+                  on:change="/onUnitOptionChange"
+                >
+                  {%- for value in option.values -%}
+                    <option
+                      value="{{ value | escape }}"
+                      {% if value.selected %}
+                        selected
+                      {% endif %}
+                    >
+                      {{- value -}}
+                      {%- if value.available == false %} - {{ 'products.product.sold_out' | t }}{% endif -%}
+                    </option>
+                  {%- endfor -%}
+                </select>
+                <span class="svg-wrapper bundle-tier__unit-select-caret">
+                  {{- 'icon-caret.svg' | inline_asset_content -}}
+                </span>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% endunless %}
+</div>
+
+{% schema %}
+{
+  "name": "t:names.bundle_tier",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "t:settings.label"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "t:settings.subtitle",
+      "info": "t:info.bundle_selector_subtitle"
+    },
+    {
+      "type": "range",
+      "id": "unit_count",
+      "label": "t:settings.unit_count",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "checkbox",
+      "id": "default_selected",
+      "label": "t:settings.default_selected",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:content.typography"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        {
+          "value": "rte",
+          "label": "t:options.default"
+        },
+        {
+          "value": "paragraph",
+          "label": "t:options.paragraph"
+        },
+        {
+          "value": "h4",
+          "label": "t:options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:options.h6"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "h5",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
+    {
+      "type": "select",
+      "id": "font",
+      "label": "t:settings.font",
+      "options": [
+        {
+          "value": "var(--font-body--family)",
+          "label": "t:options.body"
+        },
+        {
+          "value": "var(--font-subheading--family)",
+          "label": "t:options.subheading"
+        },
+        {
+          "value": "var(--font-heading--family)",
+          "label": "t:options.heading"
+        },
+        {
+          "value": "var(--font-accent--family)",
+          "label": "t:options.accent"
+        }
+      ],
+      "default": "var(--font-body--family)",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "font_size",
+      "label": "t:settings.size",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.default"
+        },
+        {
+          "value": "0.875rem",
+          "label": "14px"
+        },
+        {
+          "value": "1rem",
+          "label": "16px"
+        },
+        {
+          "value": "1.125rem",
+          "label": "18px"
+        },
+        {
+          "value": "1.25rem",
+          "label": "20px"
+        },
+        {
+          "value": "1.5rem",
+          "label": "24px"
+        }
+      ],
+      "default": "",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "case",
+      "label": "t:settings.case",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.default"
+        },
+        {
+          "value": "uppercase",
+          "label": "t:options.uppercase"
+        }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "label_font_size",
+      "label": "t:settings.label_font_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "checkbox",
+      "id": "label_bold",
+      "label": "t:options.bold",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "price_font_size",
+      "label": "t:settings.price_font_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "price_bold",
+      "label": "t:options.bold",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "unit_suffix_text",
+      "label": "t:settings.unit_suffix_text",
+      "placeholder": "t:content.bundle_selector_each_example",
+      "info": "t:info.bundle_selector_unit_suffix_text"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "label": "t:settings.subtitle_font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "checkbox",
+      "id": "subtitle_bold",
+      "label": "t:options.bold",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "savings_text",
+      "label": "t:settings.savings_text",
+      "placeholder": "t:content.bundle_selector_save_percent_example",
+      "info": "t:info.bundle_selector_savings_text"
+    },
+    {
+      "type": "range",
+      "id": "savings_font_size",
+      "label": "t:settings.savings_font_size",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:settings.text_color",
+      "placeholder": "t:settings.default"
+    },
+    {
+      "type": "header",
+      "content": "t:content.discount"
+    },
+    {
+      "type": "select",
+      "id": "discount_type",
+      "label": "t:settings.type",
+      "options": [
+        {
+          "value": "percentage",
+          "label": "t:options.percentage"
+        },
+        {
+          "value": "fixed_amount",
+          "label": "t:options.fixed_amount"
+        },
+        {
+          "value": "free_units",
+          "label": "t:options.free_units"
+        }
+      ],
+      "default": "percentage"
+    },
+    {
+      "type": "range",
+      "id": "discount_percentage",
+      "label": "t:settings.discount_value_percentage",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 0,
+      "visible_if": "{{ block.settings.discount_type == 'percentage' }}"
+    },
+    {
+      "type": "text",
+      "id": "discount_fixed_amount",
+      "label": "t:settings.discount_value_fixed",
+      "placeholder": "0.00",
+      "default": "0",
+      "visible_if": "{{ block.settings.discount_type == 'fixed_amount' }}"
+    },
+    {
+      "type": "range",
+      "id": "discount_free_units",
+      "label": "t:settings.discount_value_free_units",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "default": 0,
+      "visible_if": "{{ block.settings.discount_type == 'free_units' }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.badges"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_enabled",
+      "label": "t:settings.badge_enabled",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "t:settings.badge_text",
+      "visible_if": "{{ block.settings.badge_enabled }}"
+    },
+    {
+      "type": "range",
+      "id": "badge_font_size",
+      "label": "t:settings.badge_font_size",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 13,
+      "visible_if": "{{ block.settings.badge_enabled }}"
+    },
+    {
+      "type": "color",
+      "id": "badge_background_color",
+      "label": "t:settings.background",
+      "placeholder": "t:settings.default",
+      "visible_if": "{{ block.settings.badge_enabled }}"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "t:settings.text",
+      "placeholder": "t:settings.default",
+      "visible_if": "{{ block.settings.badge_enabled }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.bundle_tier",
+      "settings": {
+        "label": "t:text_defaults.new_bundle_tier",
+        "unit_count": 1,
+        "discount_type": "percentage",
+        "discount_percentage": 0
+      }
+    }
+  ]
+}
+{% endschema %}

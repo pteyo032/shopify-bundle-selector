@@ -1,0 +1,78 @@
+<p align="right"><a href="README.fr.md">Lire en français</a></p>
+
+# Shopify Bundle Selector — "Buy more, save more" tier picker
+
+A theme-native tier picker for Shopify product pages: the customer chooses
+"Buy 1 / Buy 3 / Buy 5" (or any tiers you configure), each with its own
+discount, and adds the whole bundle to the cart in a single click — with a
+separate variant picker (color, size…) for every unit in the pack.
+
+Built for the **Shopify Horizon** theme. No third-party app, no monthly fee,
+no page weight beyond one small web component.
+
+## Features
+
+- Configurable number of tiers, each with a label, optional subtitle, and
+  its own discount: percentage off, fixed amount off, or N units free
+- Optional corner badge per tier (e.g. "Most popular", "Best deal")
+- Savings shown as `-15%` or `-$29.99` — merchant picks the format
+- If the product has variants, every unit in a multi-unit tier gets its own
+  dropdown — order a 3-pack in three different colors in one order
+- One click adds every unit as its own cart line, tagged with a shared
+  `_bundle_id` property so they can be grouped/tracked downstream
+- Fully theme-editor configurable: colors, typography, spacing — zero code
+  changes needed to reskin it
+- Can be merged into the theme's native "Buy buttons" block behind a single
+  checkbox, so a merchant can turn it on or off per product without touching
+  blocks (see `docs/integration-guide.md`)
+
+## Repository contents
+
+This repo contains **only the custom code for this feature** — not the full
+Horizon theme, which belongs to Shopify. You drop these files into an
+existing Horizon (or Horizon-based) theme.
+
+| Path | What it is |
+|---|---|
+| `blocks/bundle-tier.liquid` | Child block — one per tier. Computes pricing, renders the row, per-unit variant selectors |
+| `blocks/bundle-selector.liquid` | Standalone parent block — use this if you want the picker as its own block |
+| `snippets/bundle-selector-styles.liquid` | All CSS |
+| `assets/bundle-selector.js` | The `<bundle-selector-component>` web component — tier switching, variant resolution, add-to-cart |
+| `locales/*.json`, `locales/*.schema.json` | English + French translations (storefront text and editor labels) |
+| `docs/integration-guide.md` | How to install it standalone, or merge it into your theme's native buy-buttons block |
+| `docs/gotchas.md` | Technical pitfalls discovered while building this, so you don't re-hit them |
+
+## Quick start
+
+1. Copy `blocks/`, `snippets/`, `assets/` and the locale keys from
+   `locales/` into your theme.
+2. In the theme editor, add the **Bundle selector** block to a product
+   template, then add one or more **Bundle tier** blocks under it.
+3. Configure each tier's label, unit count, and discount.
+
+For the merged-into-native-buy-buttons version (recommended for production —
+lets a merchant toggle it per product from one checkbox), see
+`docs/integration-guide.md`.
+
+## Known limitation: displayed price vs. cart price
+
+The price shown in the picker is **for display only** — it is not
+automatically enforced at checkout. To make the charged price match what's
+shown, pick one:
+
+1. **A matching native Shopify discount**, configured manually in
+   Admin → Discounts (simplest, no code — requires keeping both in sync by
+   hand)
+2. **A Shopify Function** that reads the `_bundle_id` / `_bundle_tier` line
+   item properties this picker already attaches, and applies the discount
+   automatically (clean, reliable, but a full app-extension build — not
+   theme code)
+3. **Dedicated bundle variants/products** at a fixed price, so the picker
+   adds one real "3-pack" variant instead of 3× the normal variant
+
+Decide this with whoever owns the store *before* wiring it up — it changes
+how much backend work is involved.
+
+## License
+
+MIT — see `LICENSE`.

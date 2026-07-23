@@ -1,0 +1,10 @@
+{
+  "content": {
+    "bundle_selector": "Bundle options",
+    "bundle_selector_select_options": "Please select all options before adding to cart",
+    "bundle_selector_save_percent": "-{{ percent }}%",
+    "bundle_selector_save_amount": "-{{ amount }}",
+    "bundle_selector_each": "/each",
+    "bundle_selector_no_tiers": "Bundle selector: add at least one tier block to configure this offer."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "content": {
+    "bundle_selector": "Options de bundle",
+    "bundle_selector_select_options": "Veuillez sélectionner toutes les options avant d'ajouter au panier",
+    "bundle_selector_save_percent": "-{{ percent }}%",
+    "bundle_selector_save_amount": "-{{ amount }}",
+    "bundle_selector_each": "/chacun",
+    "bundle_selector_no_tiers": "Sélecteur de bundle : ajoutez au moins un palier pour configurer cette offre."
+  }
+}

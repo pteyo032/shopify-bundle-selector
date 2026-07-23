@@ -1,0 +1,92 @@
+{
+  "names": {
+    "bundle_tier": "Palier de bundle",
+    "bundle_selector": "Sélecteur de bundle"
+  },
+  "categories": {
+    "product": "Produit"
+  },
+  "settings": {
+    "label": "Étiquette",
+    "subtitle": "Sous-titre",
+    "unit_count": "Nombre d'unités",
+    "default_selected": "Sélectionné par défaut",
+    "preset": "Préréglage",
+    "font": "Police",
+    "size": "Taille",
+    "case": "Casse",
+    "label_font_size": "Taille du titre",
+    "price_font_size": "Taille du prix",
+    "unit_suffix_text": "Texte après le prix unitaire",
+    "subtitle_font_size": "Taille du sous-titre",
+    "savings_text": "Texte du badge d'économie",
+    "savings_font_size": "Taille du badge d'économie",
+    "text_color": "Couleur du texte",
+    "default": "Par défaut",
+    "type": "Type",
+    "discount_value_percentage": "Pourcentage de réduction",
+    "discount_value_fixed": "Montant de la réduction",
+    "discount_value_free_units": "Unités gratuites",
+    "badge_enabled": "Afficher le badge",
+    "badge_text": "Texte du badge",
+    "badge_font_size": "Taille du texte du badge",
+    "background": "Arrière-plan",
+    "text": "Texte",
+    "heading": "Titre",
+    "heading_font_size": "Taille du titre",
+    "heading_color": "Couleur du titre",
+    "background_color": "Couleur d'arrière-plan",
+    "savings_badge_background_color": "Couleur d'arrière-plan du badge d'économie",
+    "savings_display_format": "Format du badge d'économie",
+    "border_color": "Couleur de la bordure",
+    "unit_text_color": "Couleur du texte des menus déroulants",
+    "top": "Haut",
+    "bottom": "Bas",
+    "left": "Gauche",
+    "right": "Droite",
+    "enable_bundle_selector": "Activer Bundle & Save"
+  },
+  "options": {
+    "default": "Par défaut",
+    "paragraph": "Paragraphe",
+    "h4": "Titre 4",
+    "h5": "Titre 5",
+    "h6": "Titre 6",
+    "custom": "Personnalisé",
+    "body": "Corps de texte",
+    "subheading": "Sous-titre",
+    "heading": "Titre",
+    "accent": "Accentuation",
+    "uppercase": "Majuscules",
+    "bold": "Gras",
+    "percentage": "Pourcentage",
+    "fixed_amount": "Montant fixe",
+    "free_units": "Unités gratuites",
+    "amount": "Montant"
+  },
+  "info": {
+    "bundle_selector_subtitle": "Optionnel — affiché sous le libellé du palier, à côté du bouton radio",
+    "edit_presets_in_theme_settings": "Modifier les préréglages dans les [paramètres du thème](/editor?context=theme&category=typography)",
+    "bundle_selector_unit_suffix_text": "Affiché après le prix unitaire quand un palier contient plus d'une unité. Laisser vide pour utiliser la traduction par défaut du thème.",
+    "bundle_selector_savings_text": "Laisser vide pour calculer automatiquement à partir de la réduction",
+    "bundle_selector_selected_style": "S'applique au palier actuellement sélectionné par le client",
+    "enable_bundle_selector": "Une fois activé, affiche le sélecteur de paliers Bundle & Save à la place des boutons standards de quantité et d'ajout au panier"
+  },
+  "content": {
+    "typography": "Typographie",
+    "appearance": "Apparence",
+    "discount": "Réduction",
+    "badges": "Badge",
+    "padding": "Espacement",
+    "bundle_selector": "Bundle & Save",
+    "bundle_selector_each_example": "/ chacun",
+    "bundle_selector_save_percent_example": "-15%",
+    "standard_buy_buttons": "Boutons d'achat standards"
+  },
+  "text_defaults": {
+    "new_bundle_tier": "Nouveau palier",
+    "buy_one": "Acheter 1",
+    "buy_two_get_one_free": "Achetez 2, obtenez 1 gratuit",
+    "most_popular": "Plus populaire"
+  }
+}

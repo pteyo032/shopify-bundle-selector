@@ -1,0 +1,92 @@
+{
+  "names": {
+    "bundle_tier": "Bundle tier",
+    "bundle_selector": "Bundle selector"
+  },
+  "categories": {
+    "product": "Product"
+  },
+  "settings": {
+    "label": "Label",
+    "subtitle": "Subtitle",
+    "unit_count": "Number of units",
+    "default_selected": "Selected by default",
+    "preset": "Preset",
+    "font": "Font",
+    "size": "Size",
+    "case": "Case",
+    "label_font_size": "Title size",
+    "price_font_size": "Price size",
+    "unit_suffix_text": "Per-unit price suffix",
+    "subtitle_font_size": "Subtitle size",
+    "savings_text": "Savings badge text",
+    "savings_font_size": "Savings badge size",
+    "text_color": "Text color",
+    "default": "Default",
+    "type": "Type",
+    "discount_value_percentage": "Discount percentage",
+    "discount_value_fixed": "Discount amount",
+    "discount_value_free_units": "Free units",
+    "badge_enabled": "Show badge",
+    "badge_text": "Badge text",
+    "badge_font_size": "Badge text size",
+    "background": "Background",
+    "text": "Text",
+    "heading": "Heading",
+    "heading_font_size": "Heading size",
+    "heading_color": "Heading color",
+    "background_color": "Background color",
+    "savings_badge_background_color": "Savings badge background color",
+    "savings_display_format": "Savings badge format",
+    "border_color": "Border color",
+    "unit_text_color": "Dropdown text color",
+    "top": "Top",
+    "bottom": "Bottom",
+    "left": "Left",
+    "right": "Right",
+    "enable_bundle_selector": "Enable Bundle & Save"
+  },
+  "options": {
+    "default": "Default",
+    "paragraph": "Paragraph",
+    "h4": "Heading 4",
+    "h5": "Heading 5",
+    "h6": "Heading 6",
+    "custom": "Custom",
+    "body": "Body",
+    "subheading": "Subheading",
+    "heading": "Heading",
+    "accent": "Accent",
+    "uppercase": "Uppercase",
+    "bold": "Bold",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed amount",
+    "free_units": "Free units",
+    "amount": "Amount"
+  },
+  "info": {
+    "bundle_selector_subtitle": "Optional — shown below the tier label, next to the radio button",
+    "edit_presets_in_theme_settings": "Edit presets in [theme settings](/editor?context=theme&category=typography)",
+    "bundle_selector_unit_suffix_text": "Shown after the per-unit price when a tier has more than 1 unit. Leave blank to use the theme's default translation.",
+    "bundle_selector_savings_text": "Leave blank to auto-calculate from the discount",
+    "bundle_selector_selected_style": "Applies to whichever tier the customer has selected",
+    "enable_bundle_selector": "When enabled, shows the Bundle & Save tier selector instead of the standard quantity and add-to-cart buttons"
+  },
+  "content": {
+    "typography": "Typography",
+    "appearance": "Appearance",
+    "discount": "Discount",
+    "badges": "Badge",
+    "padding": "Padding",
+    "bundle_selector": "Bundle & Save",
+    "bundle_selector_each_example": "/ each",
+    "bundle_selector_save_percent_example": "-15%",
+    "standard_buy_buttons": "Standard buy buttons"
+  },
+  "text_defaults": {
+    "new_bundle_tier": "New tier",
+    "buy_one": "Buy 1",
+    "buy_two_get_one_free": "Buy 2, get 1 free",
+    "most_popular": "Most popular"
+  }
+}

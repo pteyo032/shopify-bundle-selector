@@ -10,6 +10,10 @@ separate variant picker (color, size…) for every unit in the pack.
 Built for the **Shopify Horizon** theme. No third-party app, no monthly fee,
 no page weight beyond one small web component.
 
+| Bundle Selector enabled | Native buy buttons |
+|---|---|
+| ![Product page with the Bundle Selector: three tiers, "Achetez 3" selected with per-unit color/size pickers](docs/screenshots/bundle-selector-active.png) | ![Same product with the theme's standard quantity and add-to-cart buttons](docs/screenshots/native-buy-buttons.png) |
+
 ## Features
 
 - Configurable number of tiers, each with a label, optional subtitle, and

@@ -12,6 +12,10 @@ Conçu pour le thème **Shopify Horizon**. Aucune application tierce, aucun
 abonnement mensuel, aucun poids ajouté à la page au-delà d'un petit web
 component.
 
+| Bundle Selector activé | Boutons d'achat natifs |
+|---|---|
+| ![Fiche produit avec le Bundle Selector : trois paliers, "Achetez 3" sélectionné avec les sélecteurs de couleur/taille par unité](docs/screenshots/bundle-selector-active.png) | ![Même produit avec les boutons standards de quantité et d'ajout au panier du thème](docs/screenshots/native-buy-buttons.png) |
+
 ## Fonctionnalités
 
 - Nombre de paliers configurable, chacun avec un libellé, un sous-titre

@@ -114,6 +114,7 @@
       data-unit-count="{{ unit_count }}"
       data-per-unit-price="{{ per_unit_cents }}"
       data-tier-label="{{ block.settings.label | escape }}"
+      data-tier-code="{{ block.settings.tier_code | strip | escape }}"
       {% if block.settings.default_selected %}
         checked
       {% endif %}
@@ -284,6 +285,12 @@
   "name": "t:names.bundle_tier",
   "tag": null,
   "settings": [
+    {
+      "type": "text",
+      "id": "tier_code",
+      "label": "t:settings.tier_code",
+      "info": "t:info.bundle_selector_tier_code"
+    },
     {
       "type": "text",
       "id": "label",

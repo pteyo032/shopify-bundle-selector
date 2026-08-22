@@ -10,6 +10,7 @@
     "label": "Label",
     "subtitle": "Subtitle",
     "unit_count": "Number of units",
+    "tier_code": "Tier code",
     "default_selected": "Selected by default",
     "preset": "Preset",
     "font": "Font",
@@ -69,6 +70,7 @@
     "edit_presets_in_theme_settings": "Edit presets in [theme settings](/editor?context=theme&category=typography)",
     "bundle_selector_unit_suffix_text": "Shown after the per-unit price when a tier has more than 1 unit. Leave blank to use the theme's default translation.",
     "bundle_selector_savings_text": "Leave blank to auto-calculate from the discount",
+    "bundle_selector_tier_code": "Stable key written to the order, used by discount and reporting integrations. Uppercase, no spaces or accents. Do not change it once orders exist — past orders cannot be updated. Left empty, no code is written.",
     "bundle_selector_selected_style": "Applies to whichever tier the customer has selected",
     "enable_bundle_selector": "When enabled, shows the Bundle & Save tier selector instead of the standard quantity and add-to-cart buttons"
   },

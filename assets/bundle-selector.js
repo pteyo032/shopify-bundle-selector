@@ -199,7 +199,16 @@ class BundleSelectorComponent extends Component {
     const hasOnlyDefaultVariant = this.dataset.hasOnlyDefaultVariant === 'true';
     const tierId = radio.value;
     const tierLabel = radio.dataset.tierLabel || '';
+    const tierCode = radio.dataset.tierCode || '';
     const bundleId = crypto.randomUUID();
+
+    // Built once so both branches below write the same properties — modifying
+    // only one of them is the easy mistake here. The merchant-set code is the
+    // stable key downstream consumers match on; the label stays for human
+    // reading. A blank code omits the key entirely rather than writing an empty
+    // string: an absent property is diagnosable, an empty one is not.
+    const lineProperties = { _bundle_id: bundleId, _bundle_tier: tierLabel };
+    if (tierCode) lineProperties._bundle_tier_code = tierCode;
 
     /** @type {Array<{id: number, quantity: number, properties: Record<string, string>}>} */
     const items = [];
@@ -214,7 +223,7 @@ class BundleSelectorComponent extends Component {
         items.push({
           id: defaultVariant.id,
           quantity: 1,
-          properties: { _bundle_id: bundleId, _bundle_tier: tierLabel },
+          properties: { ...lineProperties },
         });
       }
     } else {
@@ -230,7 +239,7 @@ class BundleSelectorComponent extends Component {
         items.push({
           id: match.id,
           quantity: 1,
-          properties: { _bundle_id: bundleId, _bundle_tier: tierLabel },
+          properties: { ...lineProperties },
         });
       }
     }

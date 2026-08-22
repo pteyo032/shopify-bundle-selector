@@ -50,3 +50,31 @@ don't have to rediscover them.
    automatic `shopify[bot]` commits.** Always `git pull` before continuing
    local work if the store might have been edited from the admin in the
    meantime.
+
+9. **`block.id` is not a stable identifier — do not persist it anywhere.**
+   Shopify's own docs say it is "dynamically generated and subject to
+   change… avoid relying on a literal value of this ID", and measurement
+   confirms it for both kinds of block. A dynamic block renders as
+   `AM3VLcjF0QUJHTkdIe__bundle_tier_Gym97G`; a *static* one as
+   `AMVRZUTZvZFVwbGlzV__tier-3` — an opaque generated prefix, `__`, then the
+   literal static id. Only the suffix is stable. It is fine for wiring up the
+   DOM within one render (which is all this component uses it for), and wrong
+   as a key you write into an order, a report, or a discount function.
+
+10. **`block.blocks` does not give a parent block usable access to its
+    children.** Measured in `buy-buttons.liquid`: it returns shells of type
+    `@theme` whose `settings` are entirely empty — `label`, `unit_count` and
+    every custom setting come back blank — and it never enumerates static
+    blocks at all (their `block_order` is `[]`). A validation written in
+    Liquid on top of it will silently report every child as misconfigured.
+    If a parent needs to inspect its children, read the rendered DOM instead:
+    that is why `assets/bundle-tier-code-warnings.js` exists rather than a
+    Liquid loop.
+
+11. **Read tier data from the radio input, not from the tier wrapper.**
+    `data-tier-id` appears on three elements per tier, but `data-tier-label`
+    and `data-tier-code` exist **only** on the `<input type="radio">`. The
+    component reads `radio.dataset`, so an attribute added anywhere else
+    comes back `undefined` — a failure that looks like a data problem rather
+    than a placement one.
+

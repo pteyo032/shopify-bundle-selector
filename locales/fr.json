@@ -5,6 +5,9 @@
     "bundle_selector_save_percent": "-{{ percent }}%",
     "bundle_selector_save_amount": "-{{ amount }}",
     "bundle_selector_each": "/chacun",
-    "bundle_selector_no_tiers": "Sélecteur de bundle : ajoutez au moins un palier pour configurer cette offre."
+    "bundle_selector_no_tiers": "Sélecteur de bundle : ajoutez au moins un palier pour configurer cette offre.",
+    "bundle_selector_missing_code": "Sélecteur de bundle : le palier « {{ label }} » n’a pas de code. Ajoutez-en un dans les réglages du palier — les commandes passées sans code ne pourront pas être rattachées à ce palier plus tard.",
+    "bundle_selector_duplicate_code": "Sélecteur de bundle : le code « {{ code }} » est utilisé par plusieurs paliers. Donnez un code unique à chacun, sinon les remises et les rapports ne pourront pas les distinguer.",
+    "bundle_selector_untitled_tier": "sans libellé"
   }
 }

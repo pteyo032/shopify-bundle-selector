@@ -24,6 +24,11 @@ no page weight beyond one small web component.
   dropdown — order a 3-pack in three different colors in one order
 - One click adds every unit as its own cart line, tagged with a shared
   `_bundle_id` property so they can be grouped/tracked downstream
+- Each tier carries a merchant-set **tier code**, written to the order as
+  `_bundle_tier_code` — a stable key that survives renaming the tier and is
+  identical in every language, so discount functions and reports have
+  something reliable to match on. The theme editor flags blank and duplicate
+  codes before they reach an order
 - Fully theme-editor configurable: colors, typography, spacing — zero code
   changes needed to reskin it
 - Can be merged into the theme's native "Buy buttons" block behind a single
@@ -42,6 +47,8 @@ existing Horizon (or Horizon-based) theme.
 | `blocks/bundle-selector.liquid` | Standalone parent block — use this if you want the picker as its own block |
 | `snippets/bundle-selector-styles.liquid` | All CSS |
 | `assets/bundle-selector.js` | The `<bundle-selector-component>` web component — tier switching, variant resolution, add-to-cart |
+| `assets/bundle-tier-code-warnings.js` | Editor-only component that flags blank or duplicated tier codes. Never loaded on the storefront |
+| `snippets/bundle-tier-code-warnings.liquid` | Renders the above and passes it the translated messages |
 | `locales/*.json`, `locales/*.schema.json` | English + French translations (storefront text and editor labels) |
 | `docs/integration-guide.md` | How to install it standalone, or merge it into your theme's native buy-buttons block |
 | `docs/gotchas.md` | Technical pitfalls discovered while building this, so you don't re-hit them |
@@ -67,10 +74,19 @@ shown, pick one:
 1. **A matching native Shopify discount**, configured manually in
    Admin → Discounts (simplest, no code — requires keeping both in sync by
    hand)
-2. **A Shopify Function** that reads the `_bundle_id` / `_bundle_tier` line
-   item properties this picker already attaches, and applies the discount
-   automatically (clean, reliable, but a full app-extension build — not
-   theme code)
+2. **A Shopify Function** that reads the line item properties this picker
+   already attaches and applies the discount automatically (clean, reliable,
+   but a full app-extension build — not theme code). Match on
+   `_bundle_tier_code`, not on `_bundle_tier`: the label is display text a
+   merchant can rename and a translation can change, the code is not. Group
+   the lines of one bundle by `_bundle_id`.
+
+   Two rules for that function. Line item properties are writable by the
+   customer through the cart API, so **never read a discount amount from
+   them** — read the tier identity, then look the discount up in a source you
+   control and re-check that the line quantities match the tier being
+   claimed. And orders placed before you added tier codes will not have one:
+   fall back to `_bundle_tier` when `_bundle_tier_code` is absent.
 3. **Dedicated bundle variants/products** at a fixed price, so the picker
    adds one real "3-pack" variant instead of 3× the normal variant
 

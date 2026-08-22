@@ -5,6 +5,9 @@
     "bundle_selector_save_percent": "-{{ percent }}%",
     "bundle_selector_save_amount": "-{{ amount }}",
     "bundle_selector_each": "/each",
-    "bundle_selector_no_tiers": "Bundle selector: add at least one tier block to configure this offer."
+    "bundle_selector_no_tiers": "Bundle selector: add at least one tier block to configure this offer.",
+    "bundle_selector_missing_code": "Bundle selector: the tier \"{{ label }}\" has no tier code. Add one in the tier settings — orders placed without it cannot be traced back to this tier later.",
+    "bundle_selector_duplicate_code": "Bundle selector: the tier code \"{{ code }}\" is used by more than one tier. Give each tier its own code, or discounts and reports will not be able to tell them apart.",
+    "bundle_selector_untitled_tier": "untitled"
   }
 }

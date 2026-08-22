@@ -74,5 +74,20 @@ product without adding/removing blocks.
 5. Copy the locale keys from `locales/*.json` and `locales/*.schema.json`
    into your theme's own locale files.
 
+6. **Give each tier a tier code.** Every tier has a **Tier code** setting
+   (e.g. `TIER_A`) that is written to the order as `_bundle_tier_code`. It is
+   what a discount function or a report should match on, because unlike the
+   tier's label it survives renaming and is identical in every language.
+
+   Two things to know here:
+
+   - A preset only seeds a **new** block. If your theme already has a
+     buy-buttons block saved in `templates/product.json`, adding tier codes
+     to the preset will not backfill it — set them in the theme editor, or
+     add `"tier_code"` to each tier directly in the template JSON.
+   - Leave a code blank and no property is written at all. That is
+     deliberate: an absent property is diagnosable, a misleading one is not.
+     The theme editor warns you about blank and duplicate codes.
+
 That's it — no JavaScript changes needed beyond copying `bundle-selector.js`
 as-is; it only activates inside a `<bundle-selector-component>` element.

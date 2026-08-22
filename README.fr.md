@@ -30,6 +30,12 @@ component.
 - Un clic ajoute chaque unité comme sa propre ligne de panier, taguée avec
   une propriété `_bundle_id` partagée, pour pouvoir les regrouper/suivre en
   aval
+- Chaque palier porte un **code de palier** saisi par le marchand, écrit dans
+  la commande en `_bundle_tier_code` — une clé stable qui survit au
+  renommage du palier et reste identique dans toutes les langues, pour que
+  les fonctions de remise et les rapports aient enfin quelque chose de
+  fiable à comparer. L'éditeur de thème signale les codes vides ou en
+  doublon avant qu'ils n'atteignent une commande
 - Entièrement configurable depuis l'éditeur de thème : couleurs,
   typographie, espacement — aucune modification de code nécessaire pour le
   personnaliser
@@ -50,6 +56,8 @@ Ce dépôt contient **uniquement le code personnalisé de cette fonctionnalité*
 | `blocks/bundle-selector.liquid` | Bloc parent autonome — à utiliser si tu veux le sélecteur comme bloc indépendant |
 | `snippets/bundle-selector-styles.liquid` | Tout le CSS |
 | `assets/bundle-selector.js` | Le web component `<bundle-selector-component>` — bascule entre paliers, résolution des variantes, ajout au panier |
+| `assets/bundle-tier-code-warnings.js` | Composant réservé à l'éditeur, qui signale les codes de palier vides ou en doublon. Jamais chargé côté client |
+| `snippets/bundle-tier-code-warnings.liquid` | Affiche le composant ci-dessus et lui transmet les messages traduits |
 | `locales/*.json`, `locales/*.schema.json` | Traductions anglais + français (texte client et éditeur) |
 | `docs/integration-guide.md` | Comment l'installer en autonome, ou le fusionner dans le bloc natif de boutons d'achat de ton thème |
 | `docs/gotchas.md` | Pièges techniques rencontrés en le construisant, pour ne pas les retrouver toi-même |
@@ -76,10 +84,21 @@ prix facturé corresponde à ce qui est affiché, il faut choisir :
 1. **Une réduction Shopify native correspondante**, configurée manuellement
    dans Admin → Réductions (le plus simple, zéro code — demande de garder
    les deux synchronisés à la main)
-2. **Une Shopify Function** qui lit les propriétés de ligne `_bundle_id` /
-   `_bundle_tier` déjà posées par ce sélecteur et applique la réduction
-   automatiquement (solution propre et fiable, mais un développement
-   d'extension d'app complet — pas du code de thème)
+2. **Une Shopify Function** qui lit les propriétés de ligne déjà posées par
+   ce sélecteur et applique la réduction automatiquement (solution propre et
+   fiable, mais un développement d'extension d'app complet — pas du code de
+   thème). Comparer sur `_bundle_tier_code`, pas sur `_bundle_tier` : le
+   libellé est un texte d'affichage qu'un marchand peut renommer et qu'une
+   traduction peut changer, le code non. Regrouper les lignes d'un même
+   bundle par `_bundle_id`.
+
+   Deux règles pour cette Function. Les propriétés de ligne sont modifiables
+   par le client via l'API panier : **n'y lisez jamais un montant de
+   remise** — lisez l'identité du palier, puis allez chercher la remise dans
+   une source que vous maîtrisez et revérifiez que les quantités de la ligne
+   correspondent au palier revendiqué. Et les commandes passées avant
+   l'ajout des codes n'en auront pas : retomber sur `_bundle_tier` quand
+   `_bundle_tier_code` est absent.
 3. **Des variantes/produits de bundle dédiés** à prix fixe, pour que le
    sélecteur ajoute une vraie variante "Pack de 3" plutôt que 3× la variante
    normale

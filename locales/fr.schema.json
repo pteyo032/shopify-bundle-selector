@@ -10,6 +10,7 @@
     "label": "Étiquette",
     "subtitle": "Sous-titre",
     "unit_count": "Nombre d'unités",
+    "tier_code": "Code de palier",
     "default_selected": "Sélectionné par défaut",
     "preset": "Préréglage",
     "font": "Police",
@@ -69,6 +70,7 @@
     "edit_presets_in_theme_settings": "Modifier les préréglages dans les [paramètres du thème](/editor?context=theme&category=typography)",
     "bundle_selector_unit_suffix_text": "Affiché après le prix unitaire quand un palier contient plus d'une unité. Laisser vide pour utiliser la traduction par défaut du thème.",
     "bundle_selector_savings_text": "Laisser vide pour calculer automatiquement à partir de la réduction",
+    "bundle_selector_tier_code": "Clé stable écrite dans la commande, utilisée par les intégrations de remise et de reporting. Majuscules, sans espace ni accent. Ne plus le modifier une fois des commandes passées — elles ne peuvent pas être mises à jour. Laissé vide, aucun code n'est écrit.",
     "bundle_selector_selected_style": "S'applique au palier actuellement sélectionné par le client",
     "enable_bundle_selector": "Une fois activé, affiche le sélecteur de paliers Bundle & Save à la place des boutons standards de quantité et d'ajout au panier"
   },

@@ -1,0 +1,26 @@
+{%- comment -%}
+  Editor-only warnings about bundle tier codes.
+
+  Takes no parameters: the check runs on the rendered DOM, where every tier —
+  static and dynamic — exposes its code on its radio input. That is deliberate.
+  Measured 2026-08-22: `block.blocks` in `buy-buttons.liquid` yields `@theme`
+  shells with no settings, and never enumerates the static tiers, so the same
+  check written in Liquid reported every dynamic tier as missing its code.
+
+  This snippet only carries the translated messages across to the component,
+  since JavaScript cannot use the `t` filter. `%%LABEL%%` and `%%CODE%%` are
+  substituted client-side.
+
+  Must be rendered OUTSIDE the `role="radiogroup"` container: that role admits
+  radio children only.
+{%- endcomment -%}
+
+{%- if request.design_mode -%}
+  <script src="{{ 'bundle-tier-code-warnings.js' | asset_url }}" defer></script>
+
+  <bundle-tier-code-warnings
+    data-missing-template="{{ 'content.bundle_selector_missing_code' | t: label: '%%LABEL%%' | escape }}"
+    data-duplicate-template="{{ 'content.bundle_selector_duplicate_code' | t: code: '%%CODE%%' | escape }}"
+    data-untitled-label="{{ 'content.bundle_selector_untitled_tier' | t | escape }}"
+  ></bundle-tier-code-warnings>
+{%- endif -%}

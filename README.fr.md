@@ -2,6 +2,8 @@
 
 # Shopify Bundle Selector — Sélecteur de paliers "Achetez plus, économisez plus"
 
+[![Theme Check](https://github.com/pteyo032/shopify-bundle-selector/actions/workflows/theme-check.yml/badge.svg)](https://github.com/pteyo032/shopify-bundle-selector/actions/workflows/theme-check.yml)
+
 Un sélecteur de paliers d'achat intégré au thème, pour les fiches produit
 Shopify : le client choisit "Achetez 1 / 3 / 5" (ou tout autre palier
 configuré), chacun avec sa propre réduction, et ajoute tout le pack au panier

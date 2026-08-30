@@ -2,6 +2,8 @@
 
 # Shopify Bundle Selector — "Buy more, save more" tier picker
 
+[![Theme Check](https://github.com/pteyo032/shopify-bundle-selector/actions/workflows/theme-check.yml/badge.svg)](https://github.com/pteyo032/shopify-bundle-selector/actions/workflows/theme-check.yml)
+
 A theme-native tier picker for Shopify product pages: the customer chooses
 "Buy 1 / Buy 3 / Buy 5" (or any tiers you configure), each with its own
 discount, and adds the whole bundle to the cart in a single click — with a
